@@ -3,7 +3,7 @@ import ASTParser as parser
 
 
 def show_ast():
-    with open("a.py", "r") as source:
+    with open("ToBeIndexed.py", "r") as source:
         text = source.read()
         tree = ast.parse(text)
         namespace = {}
@@ -11,7 +11,7 @@ def show_ast():
         print(namespace)
 
 def walk(namespace, node, level = 0, sep = '\t'):
-
+    print(namespace)
     name = parser.getName(node)
     position = parser.getPosition(node)
 

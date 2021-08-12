@@ -1,6 +1,7 @@
 import ast
 
 
+
 def getName(node):
     if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
         return node.name
