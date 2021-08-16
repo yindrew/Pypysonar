@@ -1,34 +1,30 @@
 import ast
-import ASTParser as parser
+import ASTParser as Parser
 
 
-
-# generate the namespace hieracrhy
+# Generates the namespace hierarchy
 def generate(tree):
-    namespace, level, seperator = {}, 0, '\t'
-    walk(namespace, tree, level, seperator)
+    namespace, level, separator = {}, 0, '\t'
+    _walk(namespace, tree, level, separator)
     return namespace
 
 
-# Turns a AST into a namespace hiearchy.
-def walk(namespace, node, level = 0, sep = '\t'):
+# Turns a AST into a namespace hierarchy.
+def _walk(namespace, node, level=0, sep='\t'):
+    print(level, ':', sep*level, node)
 
-    # get the name and the position
-    name = parser.getName(node)
-    position = parser.getPosition(node)
+    # get the name and the position of the node
+    name = Parser.get_name(node)
+    position = Parser.get_position(node)
 
     # if the parser should be indexed, index and put the node into the NS
-    if parser.shouldIndex(node):
-        parser.index(namespace, name, position)
+    if Parser.should_index(node):
+        Parser.index(namespace, name, position)
 
-    # loop thru the child nodes
+    # if the parser is a type that will need a inner namespace, create the inner namespace and walk through it
+    if Parser.should_create_namespace(node):
+        namespace = Parser.create_namespace(namespace, name, position)
+
+    # loop through the child nodes
     for n in ast.iter_child_nodes(node):
-        # if you should create a subNS create one, and add the node into the subNS
-        if parser.shouldCreateNamespace(node):
-            # create a new namespace
-            ns = {}
-            parser.createNamespace(namespace, ns, name, position)
-            walk(ns, n, level + 1)
-        # if you don't have to create a subNS, just walk thru the regular node
-        else:
-            walk(namespace, n, level + 1)
+        _walk(namespace, n, level + 1)
